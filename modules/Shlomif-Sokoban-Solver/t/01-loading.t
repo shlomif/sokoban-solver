@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 17;
 
 use Shlomif::Sokoban::Solver::Board;
 
@@ -49,4 +49,20 @@ EOF
     is_deeply($board->_dests(),
         [[4,3], [3,4], [5,4], [4,5]],
     );
+
+    my $ok_box = sub {
+        local $Test::Builder::Level = $Test::Builder::Level + 1;
+        my ($x, $y, $msg) = @_;
+
+        ok ($board->is_box($board->_init_state(), $x, $y), $msg);
+    };
+
+    # TEST
+    $ok_box->(3, 3, "3,3 is a box");
+    # TEST
+    $ok_box->(3, 5, "3,5 is a box");
+    # TEST
+    $ok_box->(5, 3, "5,3 is a box");
+    # TEST
+    $ok_box->(5, 5, "5,5 is a box");
 }
