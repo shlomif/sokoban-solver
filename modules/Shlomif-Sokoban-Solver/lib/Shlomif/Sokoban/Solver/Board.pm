@@ -18,7 +18,19 @@ use List::Util qw(max);
 use Object::Tiny qw/
     height
     width
+    _data
 /;
+
+my $wall_bits = 2;
+my $dest_place_bits = 2;
+
+=head1 METHODS
+
+=head2 load($board)
+
+Loads a board in standard Sokoban notation.
+
+=cut
 
 sub load
 {
@@ -32,16 +44,47 @@ sub load
 
     my @lines = (map { [ split(//, $_) ] } split(/\n/, $contents));
 
+    my $data = "";
+
     my $self = 
         $pkg->new(
             height => scalar(@lines),
             width => max(map { scalar(@$_) } @lines),
+            _data => \$data,
         );
+
+    foreach my $y (0 .. $#lines)
+    {
+        my $l = $lines[$y];
+        foreach my $x (0 .. $#$l)
+        {
+            my $offset = $y*$self->width()+$x;
+            if ($l->[$x] eq "#")
+            {
+                vec(${$self->_data()}, $offset, 2) = $wall_bits;
+            }
+            else
+            {
+                vec(${$self->_data()}, $offset, 2) = 0;
+            }
+        }
+    }
 
     return $self;
 }
 
-=head1 METHODS
+=head2 $board->is_wall($x,$y)
+
+Returns if the block at the position $x,$y is a wall.
+
+=cut
+
+sub is_wall
+{
+    my ($self, $x, $y) = @_;
+
+    return (vec(${$self->_data()}, $y*$self->width()+$x, 2) == $wall_bits);
+}
 
 =head2 width()
 
@@ -50,10 +93,6 @@ Returns the width of the board.
 =head2 height()
 
 Returns the height of the board.
-
-=head2 load($board)
-
-Loads a board in standard Sokoban notation.
 
 =cut
 
