@@ -1,0 +1,11 @@
+Regular:
+--------
+
+115.52user 0.03system 1:56.93elapsed 98%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+858minor)pagefaults 0swaps
+
+With shortened package name:
+----------------------------
+
+112.60user 0.06system 1:54.45elapsed 98%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+858minor)pagefaults 0swaps

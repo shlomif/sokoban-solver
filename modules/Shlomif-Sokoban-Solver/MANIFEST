@@ -1,5 +1,7 @@
 Build.PL
 Changes
+examples/Solve.pl
+examples/Solve-timing.txt
 lib/Shlomif/Sokoban/Solver/Board.pm
 lib/Shlomif/Sokoban/Solver.pm
 MANIFEST
