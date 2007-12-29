@@ -1,8 +1,10 @@
 Build.PL
 Changes
+lib/Shlomif/Sokoban/Solver/Board.pm
+lib/Shlomif/Sokoban/Solver.pm
 MANIFEST
 README
-lib/Shlomif/Sokoban/Solver.pm
 t/00-load.t
+t/01-loading.t
 t/pod-coverage.t
 t/pod.t

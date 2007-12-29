@@ -9,6 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Shlomif/Sokoban/Solver.pm',
     build_requires => {
         'Test::More' => 0,
+        'Object::Tiny' => 0,
     },
     add_to_cleanup      => [ 'Shlomif-Sokoban-Solver-*' ],
     create_makefile_pl => 'traditional',
