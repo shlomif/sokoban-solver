@@ -19,10 +19,11 @@ use Object::Tiny qw/
     height
     width
     _data
+    _dests
 /;
 
-my $wall_bits = 2;
-my $dest_place_bits = 2;
+my $dest_place_bits = 0x1;
+my $wall_bits = 0x2;
 
 =head1 METHODS
 
@@ -51,6 +52,7 @@ sub load
             height => scalar(@lines),
             width => max(map { scalar(@$_) } @lines),
             _data => \$data,
+            _dests => [],
         );
 
     foreach my $y (0 .. $#lines)
@@ -62,6 +64,11 @@ sub load
             if ($l->[$x] eq "#")
             {
                 vec(${$self->_data()}, $offset, 2) = $wall_bits;
+            }
+            elsif ($l->[$x] eq ".")
+            {
+                vec(${$self->_data()}, $offset, 2) = $dest_place_bits;
+                push @{$self->_dests()}, [$x, $y];
             }
             else
             {
@@ -85,6 +92,22 @@ sub is_wall
 
     return (vec(${$self->_data()}, $y*$self->width()+$x, 2) == $wall_bits);
 }
+
+=head2 $board->is_dest($x,$y)
+
+Returns if the block at the position $x,$y is a destination block.
+
+=cut
+
+sub is_dest
+{
+    my ($self, $x, $y) = @_;
+
+    return (vec(${$self->_data()}, $y*$self->width()+$x, 2) 
+            == $dest_place_bits
+        );
+}
+
 
 =head2 width()
 
