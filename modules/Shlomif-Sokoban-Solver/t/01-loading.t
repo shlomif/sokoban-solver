@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 17;
+use Test::More tests => 20;
 
 use Shlomif::Sokoban::Solver::Board;
 
@@ -65,4 +65,18 @@ EOF
     $ok_box->(5, 3, "5,3 is a box");
     # TEST
     $ok_box->(5, 5, "5,5 is a box");
+
+    my $not_box = sub {
+        local $Test::Builder::Level = $Test::Builder::Level + 1;
+        my ($x, $y, $msg) = @_;
+
+        ok (!$board->is_box($board->_init_state(), $x, $y), $msg);
+    };
+    
+    # TEST
+    $not_box->(3, 4, "3,4 is not a box");
+    # TEST
+    $not_box->(4, 3, "4,3 is not a box");
+    # TEST
+    $not_box->(2, 4, "2,4 is not a box");
 }
