@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 20;
+use Test::More tests => 25;
 
 use Shlomif::Sokoban::Solver::Board;
 
@@ -79,4 +79,31 @@ EOF
     $not_box->(4, 3, "4,3 is not a box");
     # TEST
     $not_box->(2, 4, "2,4 is not a box");
+
+    my $ok_reach = sub {
+        local $Test::Builder::Level = $Test::Builder::Level + 1;
+        my ($x, $y, $msg) = @_;
+
+        ok ($board->is_reachable($board->_init_state(), $x, $y), $msg);
+    };
+
+    # TEST
+    $ok_reach->(3, 4, "3,4 is reachable");
+    # TEST
+    $ok_reach->(2, 4, "2,4 is reachable");
+
+    my $not_reach = sub {
+        local $Test::Builder::Level = $Test::Builder::Level + 1;
+        my ($x, $y, $msg) = @_;
+
+        ok (!$board->is_reachable($board->_init_state(), $x, $y), $msg);
+    };
+
+    
+    # TEST
+    $not_reach->(1, 2, "1,2 is not reachable since it's outside the walls");
+    # TEST
+    $not_reach->(3, 3, "3,3 is not reachable since it's a box");
+    # TEST
+    $not_reach->(3, 0, "3,0 is not reachable since it's a wall");
 }
