@@ -22,6 +22,7 @@ use Object::Tiny qw/
     _data
     _dests
     _init_state
+    _queue
 /;
 
 my $dest_place_bits = 0x1;
@@ -70,6 +71,7 @@ sub load
             _dests => [],
             _init_state => \$init_state,
             _collect => +{},
+            _queue => [],
         );
 
 
@@ -310,6 +312,88 @@ sub _is_final
     return 1;
 }
 
+sub _try_to_move_box
+{
+    my ($self, $state_ref, $x, $y) = @_;
+
+    for my $offset ([-1,0],[1,0],[0,-1],[0,1])
+    {
+        my @push_to = ($x+$offset->[0], $y+$offset->[1]);
+        my @push_from = ($x-$offset->[0], $y-$offset->[1]);
+        
+        if (   (! $self->is_wall(@push_to))
+            && (! $self->is_box($state_ref, @push_to))
+            && $self->is_reachable($state_ref, @push_from)
+           )
+        {
+            # We can push.
+            my $new_state_ref =
+                $self->_derive($state_ref, [$x, $y], \@push_to)
+                ;
+
+            # Print it - this is temporary for debugging.
+            # (Now commented out.)
+            # $self->_output($new_state_ref);
+
+            # Else - register it and proceed.
+            
+            my ($rot_idx, $rot_state) =
+                $self->_get_min_rot_perm($new_state_ref);
+            if (exists($self->_collect()->{$$rot_state}))
+            {
+                # Do nothing
+            }
+            else
+            {
+                $self->_collect()->{$$rot_state} =
+                {
+                    r => (($rot_idx+$self->_collect()->{$$state_ref}->{r})%4),
+                    p => $state_ref
+                };
+                if ($self->_is_final($rot_state))
+                {
+                    return $rot_state;
+                }
+                push @{$self->_queue()}, $rot_state;
+            }
+            
+        }
+    }
+
+    return;
+}
+
+sub _trace_solution
+{
+    my ($self, $final_state) = @_;
+
+    my @solution;
+
+    {
+        my $state = $final_state;
+
+        while (defined($state))
+        {
+            push @solution, $state;
+            $state = $self->_collect->{$$state}->{p};
+        }
+    }
+
+    foreach my $state (reverse(@solution))
+    {
+        my $r = $self->_collect->{$$state}->{r};
+
+        # Normalize the state from its rotated position.
+        my $rot_state = $state;
+        while ($r%4 != 0)
+        {
+            $rot_state = $self->_rotate($rot_state);
+            $r++;
+        }
+
+        $self->_output($rot_state);
+    }
+}
 
 =head2 $board->solve()
 
@@ -327,12 +411,12 @@ sub solve
 
     $self->_collect()->{$$rot_state} = { r => $rot_idx, p => undef() };
 
-    my @queue = ($rot_state);
+    push @{$self->_queue()}, $rot_state;
 
     my $w = $self->width()-1;
     my $h = $self->height()-1;
 
-    while (my $state_ref = pop(@queue))
+    while (my $state_ref = pop(@{$self->_queue()}))
     {
         for my $y (0 .. $h)
         {
@@ -340,45 +424,13 @@ sub solve
             {
                 if ($self->is_box($state_ref, $x, $y))
                 {
-                    for my $offset ([-1,0],[1,0],[0,-1],[0,1])
+                    my $final = $self->_try_to_move_box($state_ref, $x, $y);
+
+                    if (defined($final))
                     {
-                        my @push_to = ($x+$offset->[0], $y+$offset->[1]);
-                        my @push_from = ($x-$offset->[0], $y-$offset->[1]);
-                        
-                        if (   (! $self->is_wall(@push_to))
-                            && (! $self->is_box($state_ref, @push_to))
-                            && $self->is_reachable($state_ref, @push_from)
-                           )
-                        {
-                            # We can push.
-                            my $new_state_ref =
-                                $self->_derive($state_ref, [$x, $y], \@push_to)
-                                ;
+                        $self->_trace_solution($final);
 
-                            # Print it - this is temporary for debugging.
-                            $self->_output($new_state_ref);
-
-                            if ($self->_is_final($new_state_ref))
-                            {
-                                print "Finished\n";
-                                return 0;
-                            }
-                            # Else - register it and proceed.
-                            
-                            ($rot_idx, $rot_state) = 
-                                $self->_get_min_rot_perm($new_state_ref);
-                            if (exists($self->_collect()->{$$rot_state}))
-                            {
-                                # Do nothing
-                            }
-                            else
-                            {
-                                $self->_collect()->{$$rot_state} =
-                                    {  r => $rot_idx, p => $state_ref }
-                                    ;
-                                push @queue, $rot_state;
-                            }
-                        }
+                        return $final;
                     }
                 }
             }
