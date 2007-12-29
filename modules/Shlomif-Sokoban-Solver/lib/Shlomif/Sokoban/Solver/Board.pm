@@ -75,6 +75,7 @@ sub load
     foreach my $y (0 .. $#lines)
     {
         my $l = $lines[$y];
+
         foreach my $x (0 .. $#$l)
         {
             my $offset = $self->_calc_offset($x, $y);
@@ -197,6 +198,27 @@ sub _mark_reachable
     }
 
     return;
+}
+
+sub _rotate
+{
+    my ($self, $s_ref) = @_;
+
+    my $ret = "";
+
+    my $width = $self->width()-1;
+    my $height = $self->height()-1;
+
+    for my $x (0 .. $width)
+    {
+        for my $y (0 .. $height)
+        {
+            vec($ret, $self->_calc_offset($y, $width-$x), 2) =
+                vec($$s_ref, $self->_calc_offset($x,$y), 2);
+        }
+    }
+
+    return \$ret;
 }
 
 =head2 width()

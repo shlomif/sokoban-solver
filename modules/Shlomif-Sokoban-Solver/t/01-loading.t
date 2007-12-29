@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 25;
+use Test::More tests => 26;
 
 use Shlomif::Sokoban::Solver::Board;
 
@@ -106,4 +106,18 @@ EOF
     $not_reach->(3, 3, "3,3 is not reachable since it's a box");
     # TEST
     $not_reach->(3, 0, "3,0 is not reachable since it's a wall");
+
+    my $rotated = ${$board->_rotate($board->_init_state())};
+    my $init = ${$board->_init_state()};
+
+    # Trim the trailing zeros.
+    foreach ($rotated, $init)
+    {
+        s{\0+\z}{};
+    }
+
+    # TEST
+    is ($rotated, $init, 
+        "Rotation is OK",
+    );
 }
