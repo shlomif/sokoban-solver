@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 12;
+use Test::More tests => 13;
 
 use Shlomif::Sokoban::Solver::Board;
 
@@ -45,4 +45,8 @@ EOF
     ok ($board->is_dest(4, 3), "4,7 is a dest");
     # TEST
     ok (!$board->is_wall(4, 3), "4,3 (which is a dest) is not a wall");
+    # TEST
+    is_deeply($board->_dests(),
+        [[4,3], [3,4], [5,4], [4,5]],
+    );
 }

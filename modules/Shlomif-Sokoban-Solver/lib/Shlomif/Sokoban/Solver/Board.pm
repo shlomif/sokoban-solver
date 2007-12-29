@@ -103,7 +103,7 @@ sub is_dest
 {
     my ($self, $x, $y) = @_;
 
-    return (vec(${$self->_data()}, $y*$self->width()+$x, 2) 
+    return (vec(${$self->_data()}, $y*$self->width()+$x, 2)
             == $dest_place_bits
         );
 }
