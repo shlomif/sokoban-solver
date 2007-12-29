@@ -18,6 +18,7 @@ use List::Util qw(max);
 use Object::Tiny qw/
     height
     width
+    _collect
     _data
     _dests
     _init_state
@@ -68,6 +69,7 @@ sub load
             _data => \$data,
             _dests => [],
             _init_state => \$init_state,
+            _collect => +{},
         );
 
 
@@ -219,6 +221,169 @@ sub _rotate
     }
 
     return \$ret;
+}
+
+# Get the minimal rotation permutation
+sub _get_min_rot_perm
+{
+    my ($self, $s_ref) = @_;
+
+    # Find the minimal board by its rotation permutations.
+    my $min_rot_times = 0;
+    my $min_rot_board = $s_ref;
+    foreach my $r (1 .. 3)
+    {
+        my $new = $self->_rotate($s_ref);
+        if ($$new lt $$min_rot_board)
+        {
+            $min_rot_times = $r;
+            $min_rot_board = $new;
+        }
+        $s_ref = $new;
+    }
+
+    return ($min_rot_times, $min_rot_board);
+}
+
+sub _derive
+{
+    my ($self, $state_ref, $box_xy, $push_to_xy) = @_;
+
+    my $new_state = "";
+
+    for my $y (0 .. $self->height()-1)
+    {
+        for my $x (0 .. $self->width()-1)
+        {
+            my $offset = $self->_calc_offset($x, $y);
+            if ($self->is_box($state_ref, $x, $y))
+            {
+                vec($new_state, $offset, 2) = $box_bits;
+            }
+            else
+            {
+                vec($new_state, $offset, 2) = 0;
+            }
+        }
+    }
+
+    # Move the new box.
+    vec($new_state, $self->_calc_offset(@$box_xy), 2) = 0;
+    vec($new_state, $self->_calc_offset(@$push_to_xy), 2) = $box_bits;
+
+    # Mark the reachable bits.
+    $self->_mark_reachable(\$new_state, @$box_xy);
+
+    return \$new_state;
+}
+
+sub _output
+{
+    my ($self, $s_ref) = @_;
+
+    for my $y (0 .. ($self->height()-1))
+    {
+        for my $x (0 .. ($self->width()-1))
+        {
+            print   $self->is_wall($x, $y) ? "#"
+                  : $self->is_box($s_ref, $x, $y)  ? '$'
+                  : $self->is_dest($x, $y) ? "."
+                  : " "
+                  ;
+        }
+        print "\n";
+    }
+    print "\n";
+}
+
+sub _is_final
+{
+    my ($self, $s_ref) = @_;
+
+    foreach my $d (@{$self->_dests()})
+    {
+        if (! $self->is_box($s_ref, @$d))
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+
+=head2 $board->solve()
+
+Actually solve the board.
+
+=cut
+
+sub solve
+{
+    my $self = shift;
+
+    my $s_ref = $self->_init_state();
+
+    my ($rot_idx, $rot_state) = $self->_get_min_rot_perm($s_ref);
+
+    $self->_collect()->{$$rot_state} = { r => $rot_idx, p => undef() };
+
+    my @queue = ($rot_state);
+
+    my $w = $self->width()-1;
+    my $h = $self->height()-1;
+
+    while (my $state_ref = pop(@queue))
+    {
+        for my $y (0 .. $h)
+        {
+            for my $x (0 .. $w)
+            {
+                if ($self->is_box($state_ref, $x, $y))
+                {
+                    for my $offset ([-1,0],[1,0],[0,-1],[0,1])
+                    {
+                        my @push_to = ($x+$offset->[0], $y+$offset->[1]);
+                        my @push_from = ($x-$offset->[0], $y-$offset->[1]);
+                        
+                        if (   (! $self->is_wall(@push_to))
+                            && (! $self->is_box($state_ref, @push_to))
+                            && $self->is_reachable($state_ref, @push_from)
+                           )
+                        {
+                            # We can push.
+                            my $new_state_ref =
+                                $self->_derive($state_ref, [$x, $y], \@push_to)
+                                ;
+
+                            # Print it - this is temporary for debugging.
+                            $self->_output($new_state_ref);
+
+                            if ($self->_is_final($new_state_ref))
+                            {
+                                print "Finished\n";
+                                return 0;
+                            }
+                            # Else - register it and proceed.
+                            
+                            ($rot_idx, $rot_state) = 
+                                $self->_get_min_rot_perm($new_state_ref);
+                            if (exists($self->_collect()->{$$rot_state}))
+                            {
+                                # Do nothing
+                            }
+                            else
+                            {
+                                $self->_collect()->{$$rot_state} =
+                                    {  r => $rot_idx, p => $state_ref }
+                                    ;
+                                push @queue, $rot_state;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 =head2 width()
