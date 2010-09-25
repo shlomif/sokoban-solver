@@ -15,7 +15,9 @@ For internal use by the Sokoban solver. See the test files.
 
 use List::Util qw(max);
 
-use Object::Tiny qw/
+use Class::XSAccessor 
+    accessors => 
+    [map { $_ => $_ } qw/
     height
     width
     _collect
@@ -23,7 +25,9 @@ use Object::Tiny qw/
     _dests
     _init_state
     _queue
-/;
+    /],
+    constructor => 'new'
+    ;
 
 my $dest_place_bits = 0x1;
 my $wall_bits = 0x2;
@@ -32,6 +36,10 @@ my $box_bits = 0x1;
 my $reachable_bits = 0x2;
 
 =head1 METHODS
+
+=head2 new(...)
+
+The internal constructor - for internal use - see ->load() instead.
 
 =head2 load($board)
 
