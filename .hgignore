@@ -1,0 +1,13 @@
+modules/Shlomif-Sokoban-Solver/Build
+modules/Shlomif-Sokoban-Solver/META.yml
+modules/Shlomif-Sokoban-Solver/META.json
+modules/Shlomif-Sokoban-Solver/META.yml
+modules/Shlomif-Sokoban-Solver/MYMETA.json
+modules/Shlomif-Sokoban-Solver/MYMETA.yml
+modules/Shlomif-Sokoban-Solver/Makefile.PL
+modules/Shlomif-Sokoban-Solver/_build
+modules/Shlomif-Sokoban-Solver/blib
+
+syntax: regexp
+
+^modules/Shlomif-Sokoban-Solver/Shlomif-Sokoban-Solver-v\d+\.\d+\.\d+(?:/|\.tar\.gz$)
