@@ -10,4 +10,4 @@ modules/Shlomif-Sokoban-Solver/blib
 
 syntax: regexp
 
-^modules/Shlomif-Sokoban-Solver/Shlomif-Sokoban-Solver-v\d+\.\d+\.\d+(?:/|\.tar\.gz$)
+^modules/Shlomif-Sokoban-Solver/Shlomif-Sokoban-Solver-\d+\.\d+(?:/|\.tar\.gz$)
