@@ -15,8 +15,8 @@ For internal use by the Sokoban solver. See the test files.
 
 use List::Util qw(max);
 
-use Class::XSAccessor 
-    accessors => 
+use Class::XSAccessor
+    accessors =>
     [map { $_ => $_ } qw/
     height
     width
@@ -59,7 +59,7 @@ sub load
     my ($pkg, $contents) = @_;
 
     # Remove trailing whitespace.
-    $contents =~ s{(\s*\n)+\z}{}ms; 
+    $contents =~ s{(\s*\n)+\z}{}ms;
 
     # Remove trailing whitespace from lines.
     $contents =~ s{\s+$}{}gms;
@@ -71,7 +71,7 @@ sub load
     my $init_state = "";
     my $init_pos;
 
-    my $self = 
+    my $self =
         $pkg->new(
             height => scalar(@lines),
             width => max(map { scalar(@$_) } @lines),
@@ -328,7 +328,7 @@ sub _try_to_move_box
     {
         my @push_to = ($x+$offset->[0], $y+$offset->[1]);
         my @push_from = ($x-$offset->[0], $y-$offset->[1]);
-        
+
         if (   (! $self->is_wall(@push_to))
             && (! $self->is_box($state_ref, @push_to))
             && $self->is_reachable($state_ref, @push_from)
@@ -344,7 +344,7 @@ sub _try_to_move_box
             # $self->_output($new_state_ref);
 
             # Else - register it and proceed.
-            
+
             my ($rot_idx, $rot_state) =
                 $self->_get_min_rot_perm($new_state_ref);
             if (exists($self->_collect()->{$$rot_state}))
@@ -364,7 +364,7 @@ sub _try_to_move_box
                 }
                 push @{$self->_queue()}, $rot_state;
             }
-            
+
         }
     }
 

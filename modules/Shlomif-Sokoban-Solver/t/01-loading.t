@@ -72,7 +72,7 @@ EOF
 
         ok (!$board->is_box($board->_init_state(), $x, $y), $msg);
     };
-    
+
     # TEST
     $not_box->(3, 4, "3,4 is not a box");
     # TEST
@@ -99,7 +99,7 @@ EOF
         ok (!$board->is_reachable($board->_init_state(), $x, $y), $msg);
     };
 
-    
+
     # TEST
     $not_reach->(1, 2, "1,2 is not reachable since it's outside the walls");
     # TEST
@@ -117,7 +117,7 @@ EOF
     }
 
     # TEST
-    is ($rotated, $init, 
+    is ($rotated, $init,
         "Rotation is OK",
     );
 }
