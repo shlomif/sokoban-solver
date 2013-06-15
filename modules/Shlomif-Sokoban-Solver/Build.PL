@@ -3,10 +3,10 @@ use warnings;
 use Module::Build;
 
 my $builder = Module::Build->new(
-    module_name         => 'Shlomif::Sokoban::Solver',
+    module_name         => 'Games::Sokoban::Solver',
     license             => 'mit',
     dist_author         => 'Shlomi Fish <shlomif@iglu.org.il>',
-    dist_version_from   => 'lib/Shlomif/Sokoban/Solver.pm',
+    dist_version_from   => 'lib/Games/Sokoban/Solver.pm',
     configure_requires => {
         'Module::Build' => '0.36',
     },
@@ -19,7 +19,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
     },
-    add_to_cleanup      => [ 'Shlomif-Sokoban-Solver-*' ],
+    add_to_cleanup      => [ 'Games-Sokoban-Solver-*' ],
     meta_merge =>
     {
         resources =>

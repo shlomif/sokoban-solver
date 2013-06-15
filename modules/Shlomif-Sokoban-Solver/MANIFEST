@@ -6,8 +6,7 @@ META.yml
 README
 examples/Solve-timing.txt
 examples/Solve.pl
-lib/Shlomif/Sokoban/Solver.pm
-lib/Shlomif/Sokoban/Solver/Board.pm
+lib/Games/Sokoban/Solver.pm
 t/00-load.t
 t/01-loading.t
 t/pod-coverage.t

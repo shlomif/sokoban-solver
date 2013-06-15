@@ -3,7 +3,7 @@
 use Test::More tests => 1;
 
 BEGIN {
-	use_ok( 'Shlomif::Sokoban::Solver' );
+	use_ok( 'Games::Sokoban::Solver' );
 }
 
-diag( "Testing Shlomif::Sokoban::Solver $Shlomif::Sokoban::Solver::VERSION, Perl $], $^X" );
+diag( "Testing Games::Sokoban::Solver $Games::Sokoban::Solver::VERSION, Perl $], $^X" );

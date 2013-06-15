@@ -1,17 +1,19 @@
-package Shlomif::Sokoban::Solver::Board;
+package Games::Sokoban::Solver;
 
 use strict;
 use warnings;
 
 =head1 NAME
 
-Shlomif::Sokoban::Solver::Board - a board for the sokosolver.
+Games::Sokoban::Solver - a board for the sokosolver.
 
 =head1 SYNOPSIS
 
 For internal use by the Sokoban solver. See the test files.
 
 =cut
+
+our $VERSION = '0.0.1';
 
 use List::Util qw(max);
 
