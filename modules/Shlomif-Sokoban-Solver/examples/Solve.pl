@@ -16,7 +16,7 @@ my $board_contents = <<'EOF';
 EOF
 
 {
-    my $board = S->load($board_contents);
+    my $board = Shlomif::Sokoban::Solver::Board->load($board_contents);
 
     $board->solve();
 }

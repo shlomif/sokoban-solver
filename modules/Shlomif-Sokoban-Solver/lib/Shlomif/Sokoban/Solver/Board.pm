@@ -17,15 +17,18 @@ use List::Util qw(max);
 
 use Class::XSAccessor
     accessors =>
-    [map { $_ => $_ } qw/
-    height
-    width
-    _collect
-    _data
-    _dests
-    _init_state
-    _queue
-    /],
+    {
+        map { $_ => $_ }
+        qw/
+        height
+        width
+        _collect
+        _data
+        _dests
+        _init_state
+        _queue
+        /
+    },
     constructor => 'new'
     ;
 
