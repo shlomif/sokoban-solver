@@ -7,6 +7,7 @@ modules/Shlomif-Sokoban-Solver/MYMETA.yml
 modules/Shlomif-Sokoban-Solver/Makefile.PL
 modules/Shlomif-Sokoban-Solver/_build
 modules/Shlomif-Sokoban-Solver/blib
+modules/Shlomif-Sokoban-Solver/.build
 
 syntax: regexp
 
