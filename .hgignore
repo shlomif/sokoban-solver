@@ -11,4 +11,4 @@ modules/Shlomif-Sokoban-Solver/.build
 
 syntax: regexp
 
-^modules/Shlomif-Sokoban-Solver/Games-Sokoban-Solver-v\d+\.\d+\.\d+(?:/|\.tar\.gz$)
+^modules/Shlomif-Sokoban-Solver/Games-Sokoban-Solver-v?\d+\.\d+\.\d+(?:/|\.tar\.gz$)
