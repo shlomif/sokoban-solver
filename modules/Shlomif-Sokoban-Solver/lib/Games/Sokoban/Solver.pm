@@ -13,7 +13,7 @@ For internal use by the Sokoban solver. See the test files.
 
 =cut
 
-our $VERSION = '0.0.1';
+our $VERSION = 'v0.0.1';
 
 use List::Util qw(max);
 
